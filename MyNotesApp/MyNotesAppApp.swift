@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MyNotesAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NoteMainView()
+                .modelContainer(for: Note.self, inMemory: false)
         }
     }
 }
