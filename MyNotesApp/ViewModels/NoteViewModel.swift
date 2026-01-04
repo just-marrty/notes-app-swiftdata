@@ -12,7 +12,6 @@ import Observation
 @MainActor
 class NoteViewModel {
     var content: String = ""
-    var notes: [Note] = []
     
     func isNoteValid() -> Bool {
         !content.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
