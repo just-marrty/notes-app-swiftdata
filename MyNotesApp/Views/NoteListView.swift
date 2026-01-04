@@ -10,8 +10,6 @@ import SwiftData
 
 struct NoteListView: View {
     
-    @AppStorage("scheme") private var schemeColor: ColorBackground = .gray
-    
     @Environment(\.modelContext) private var context
     
     @Query(sort: \Note.createdAt, order: .reverse) private var notes: [Note]
@@ -47,32 +45,6 @@ struct NoteListView: View {
                 }
                 .tint(.gray.opacity(0.7))
             }
-        }
-        .navigationTitle("My Notes")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink {
-                    AddNoteView()
-                } label: {
-                    Image(systemName: "plus")
-                }
-            }
-        }
-        .navigationDestination(for: Note.self) { note in
-            NoteUpdateView(note: note)
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                NavigationLink {
-                    NoteSettingsView()
-                } label: {
-                    Image(systemName: "gear")
-                }
-            }
-        }
-        .scrollContentBackground(.hidden)
-        .background {
-            schemeColor.scheme.ignoresSafeArea()
         }
         .searchable(text: $searchText, prompt: "Search your note...")
         .animation(.default, value: searchText)
