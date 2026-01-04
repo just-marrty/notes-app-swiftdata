@@ -82,22 +82,34 @@ Application entry point:
 
 ### NoteMainView
 
-Main navigation shell:
+### NoteMainView
+
+Main navigation shell and coordinator:
 
 - Contains `NavigationStack` wrapping `NoteListView`
 - Manages dark mode preference via `@AppStorage("isDarkOn")`
+- Manages color scheme preference via `@AppStorage("scheme")`
+- **Navigation bar:**
+  - Title: "My Notes"
+  - Leading: Settings gear icon (navigates to `NoteSettingsView`)
+  - Trailing: Plus icon (navigates to `AddNoteView`)
+- **Navigation configuration:**
+  - Configures `.navigationDestination(for: Note.self)` for `NoteUpdateView`
+- **Background styling:**
+  - Hidden scroll content background (`.scrollContentBackground(.hidden)`)
+  - Themed background based on selected color scheme
 - Applies `preferredColorScheme` to entire navigation hierarchy
 - Ensures consistent dark/light mode across all child views and navigation destinations
 
 ### NoteListView
 
-Primary list view with search and navigation (MVVM pattern):
+Primary list view with search (MVVM pattern):
 
 - Uses `@Query` macro for reactive data fetching from SwiftData
   - Sorted by `createdAt` in reverse order (newest first)
 - Uses `@State` for `noteVM: NoteViewModel` instance
 - Uses `@State` for `searchText: String` (bound to `.searchable`)
-- Uses `@AppStorage("scheme")` for color scheme preference
+- Uses `@Environment(\.modelContext)` for delete operations
 - **List directly calls search inline:**
   - `List(noteVM.search(for: searchText, from: notes))`
   - Filters by search text using `localizedStandardContains`
@@ -105,29 +117,22 @@ Primary list view with search and navigation (MVVM pattern):
 - **List row display shows:**
   - Note content (limited to 1 line)
   - Creation date (formatted, secondary color)
+- **NavigationLink:**
+  - Rows wrapped in `NavigationLink(value: note)`
+  - Navigation destination configured in `NoteMainView`
 - **Swipe actions:**
   - Delete button on trailing edge
   - Gray-tinted with trash icon (0.7 opacity)
-  - Full swipe disabled for safety
+  - Full swipe disabled for safety (`allowsFullSwipe: false`)
   - Deletes from context and saves immediately with error handling
-- **Navigation features:**
-  - Rows wrapped in `NavigationLink` with `Note` value
-  - Navigation destination configured for `NoteUpdateView` via `.navigationDestination(for: Note.self)`
-- **Toolbar items:**
-  - Leading: Settings gear icon (navigates to `NoteSettingsView`)
-  - Trailing: Plus icon (navigates to `AddNoteView`)
 - **Row styling:**
   - Capsule-shaped backgrounds with gray tint (0.3 opacity)
   - Custom insets (10pt vertical, 25pt horizontal)
-  - Hidden row separators for clean look
+  - Hidden row separators for clean look (`.listRowSeparator(.hidden)`)
   - 4pt padding around capsule
-- **Background styling:**
-  - Hidden scroll content background (`.scrollContentBackground(.hidden)`)
-  - Themed background based on selected color scheme
 - **Search integration:**
   - Searchable with prompt "Search your note..."
   - Animated search results (`.animation(.default, value: searchText)`)
-- Navigation title: "My Notes"
 
 ### AddNoteView
 
